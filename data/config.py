@@ -148,7 +148,7 @@ shoga_dataset = dataset_base.copy({
   'valid_images': '/content/shoga-segmentation-combined-14030118-2/valid',
   'valid_info':   '/content/shoga-segmentation-combined-14030118-2/valid/_annotations.coco.json',
   'class_names': ('bottle'),
-  'label_map': { 1:  len(shoga_dataset.class_names) + 1 },
+  'label_map': { 1:  1 },
 })
 coco2014_dataset = dataset_base.copy({
     'name': 'COCO 2014',
@@ -823,7 +823,7 @@ yolact_resnet101_config = yolact_base_config.copy({
 yolact_resnet50_bottle_config = yolact_resnet50_config.copy({
   'name': "bottle_detection",
   'dataset': shoga_dataset,
-  'num_classes': 1, # there is only bottle class inside the images dataset
+  'num_classes': len(shoga_dataset.class_names) + 1, # there is only bottle class inside the images dataset
 })
 # endregion
 
