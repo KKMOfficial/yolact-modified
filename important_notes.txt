@@ -1,0 +1,29 @@
+use this yolact file instead of the original one in teh github!
+changes 
+	train.py -> train_original.py
+	+ train_modified.py
+	M data/configs.py
+
+check "SANITY CHECKS" block inside the train.py to gain more information
+
+backbone.py::143    set map_location="cuda:0" resolve error.
+configs.py::131		add dataset refer to documents
+configs.py::664		add model configs refer to documents
+train.py::			add device for generator located in cuda:0
+					in the dataloader section add argument generator=torch.Generator(device='cuda')
+
+install to resolve ragged assignment error at the end.
+!pip install numpy==1.21.6
+!pip install matplotlib==3.4.0
+!pip install ipykernel
+
+information about the network structure can be traced in file : yolact/yolact.py
+also look at the model configs inside the file data/config.py in the yolact_base_config dictionary
+there you can find the configs for the FPN, protonetwork and backbone structures
+
+results will be stored in the yolact/weights directory whenever training stops/interrupted
+main documentation :  https://github.com/dbolya/yolact
+simple using       :  https://www.immersivelimit.com/tutorials/train-yolact-with-a-custom-coco-dataset
+
+training expectations
+YOLO gets around 90% mAP@50, does contain artifacts and regged boundaries, execution time 30ms
