@@ -235,7 +235,7 @@ class CustomDataParallel(nn.DataParallel):
         return out
 
 
-def visualize_image(image, title="place image name here!"):
+def visualize_image(image, title="place image name here!", file_name="new_image.png"):
     # Create a figure and axis object
     fig, ax = plt.subplots()
 
@@ -246,7 +246,7 @@ def visualize_image(image, title="place image name here!"):
     ax.set_title(title)
 
     # Show the plot
-    plt.show()
+    plt.savefig(file_name)
 
 
 def train():
@@ -509,9 +509,9 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
                     print(f"Image Information : {images[cur_idx]}")
                     print(f"Target Information : {targets[cur_idx]}")
                     print(f"Mask Information : {masks[cur_idx]}")
-                    visualize_image(images[cur_idx], "image")
-                    visualize_image(targets[cur_idx], "target image")
-                    visualize_image(masks[cur_idx], "mask image")
+                    visualize_image(images[cur_idx].permute(1,2,0), "image", "/output/image.png")
+                    visualize_image(targets[cur_idx], "target image", "/output/target.png")
+                    visualize_image(masks[cur_idx].permute(1,2,0), "mask image", "/output/mask.png")
                 images[cur_idx]  = gradinator(images[cur_idx].to(device))
                 targets[cur_idx] = gradinator(targets[cur_idx].to(device))
                 masks[cur_idx]   = gradinator(masks[cur_idx].to(device))
