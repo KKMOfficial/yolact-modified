@@ -820,7 +820,7 @@ yolact_resnet101_config = yolact_base_config.copy({
     }),
 })
 
-yolact_resnet101_bottle_config = yolact_resnet101_config.copy({
+yolact_resnet50_bottle_config = yolact_resnet50_config.copy({
   'name': "bottle_detection",
   'dataset': shoga_dataset,
   'num_classes': 1, # there is only bottle class inside the images dataset
