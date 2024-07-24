@@ -24,6 +24,7 @@ there you can find the configs for the FPN, protonetwork and backbone structures
 results will be stored in the yolact/weights directory whenever training stops/interrupted
 main documentation :  https://github.com/dbolya/yolact
 simple using       :  https://www.immersivelimit.com/tutorials/train-yolact-with-a-custom-coco-dataset
+sanity check       :  https://karpathy.github.io/2019/04/25/recipe/
 
 training expectations
 YOLO gets around 90% mAP@50, does contain artifacts and regged boundaries, execution time 30ms
