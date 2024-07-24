@@ -393,7 +393,7 @@ def train():
                     set_lr(optimizer, args.lr * (args.gamma ** step_index))
 
                 if pipeline_check_stage : print(f"Optimizer Informatin\n{optimizer}")
-                if pipeline_check_stage : print(f"Datum Information\n{datum}\n{datum.shape}")
+                if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
                 
                 # Zero the grad to get ready to compute gradients
                 optimizer.zero_grad()
