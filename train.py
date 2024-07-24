@@ -22,6 +22,7 @@ import numpy as np
 import argparse
 import datetime
 import matplotlib.pyplot as plt
+import random
 
 # Oof
 import eval as eval_script
@@ -506,12 +507,13 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
         for device, alloc in zip(devices, allocation):
             for _ in range(alloc):
                 if cur_idx==0&pipeline_check_stage :
+                    rand_id = random.randint(1, 1000000)
                     print(f"Image Information : {images[cur_idx]}")
                     print(f"Target Information : {targets[cur_idx]}")
                     print(f"Mask Information : {masks[cur_idx]}")
-                    visualize_image(images[cur_idx].permute(1,2,0), "image", "./output/image.png")
-                    visualize_image(targets[cur_idx], "target image", "./output/target.png")
-                    visualize_image(masks[cur_idx].permute(1,2,0), "mask image", "./output/mask.png")
+                    visualize_image(images[cur_idx].permute(1,2,0), "image", f"./output/image_{rand_id}.png")
+                    visualize_image(targets[cur_idx], "target image", f"./output/target_{rand_id}.png")
+                    visualize_image(masks[cur_idx].permute(1,2,0), "mask image", f"./output/mask_{rand_id}.png")
                 images[cur_idx]  = gradinator(images[cur_idx].to(device))
                 targets[cur_idx] = gradinator(targets[cur_idx].to(device))
                 masks[cur_idx]   = gradinator(masks[cur_idx].to(device))
