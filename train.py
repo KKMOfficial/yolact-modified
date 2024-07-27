@@ -214,13 +214,14 @@ class NetLoss(nn.Module):
     
     def forward(self, images, targets, masks, num_crowds, cur_index=0, log=False):
         preds = self.net(images)
-        print(f">>>>>>>>>>>>>{preds.keys()}")
-        print(f">>>>>>>>>>>>>{preds['priors'].shape}")
-        print(f">>>>>>>>>>>>>{preds['mask'].shape}")
-        print(f">>>>>>>>>>>>>{preds['segm'].shape}")
-        print(f">>>>>>>>>>>>>{preds['loc'].shape}")
-        print(f">>>>>>>>>>>>>{preds['conf'].shape}")
-        print(f">>>>>>>>>>>>>{preds['proto'].shape}")
+        # 19248 is sum of the outputs of the different layers of the FPN
+        # print(f">>>>>>>>>>>>>{preds.keys()}")
+        # print(f">>>>>>>>>>>>>priors={preds['priors'].shape}")
+        # print(f">>>>>>>>>>>>>mask={preds['mask'].shape}")
+        # print(f">>>>>>>>>>>>>segm={preds['segm'].shape}")
+        # print(f">>>>>>>>>>>>>loc={preds['loc'].shape}")
+        # print(f">>>>>>>>>>>>>conf={preds['conf'].shape}")
+        # print(f">>>>>>>>>>>>>proto={preds['proto'].shape}")
         if log:
           for x in preds['proto']:
             writer.add_images('output/masks_protos', torchvision.utils.make_grid(x.reshape((x.shape[2],1,x.shape[0],x.shape[1])))[None,:,:,:], global_step=cur_index)
