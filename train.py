@@ -517,7 +517,8 @@ def train():
             # This is done per epoch
             if args.validation_epoch > 0:
                 if epoch % args.validation_epoch == 0 and epoch > 0:
-                    compute_validation_map(epoch, iteration, yolact_net, val_dataset, log if args.log else None)
+                    compute_validation_map(epoch, iteration, yolact_net, dataset, log if args.log else None)
+                    
         
         # Compute validation mAP after training is finished
         compute_validation_map(epoch, iteration, yolact_net, val_dataset, log if args.log else None)
