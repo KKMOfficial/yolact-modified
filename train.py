@@ -414,10 +414,10 @@ def train():
                     step_index += 1
                     set_lr(optimizer, args.lr * (args.gamma ** step_index))
 
-                if pipeline_check_stage : print(f"Optimizer Informatin\n{optimizer}")
-                writer.add_scalar("learning rate",optimizer.param_groups[0]['lr'],epoch*epoch_size+__index)
-                writer.add_scalar("momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
-                writer.add_scalar("weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
+                # if pipeline_check_stage : print(f"Optimizer Informatin\n{optimizer}")
+                writer.add_scalar("training/learning rate",optimizer.param_groups[0]['lr'],epoch*epoch_size+__index)
+                writer.add_scalar("training/momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
+                writer.add_scalar("training/weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
                 
                 # if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
                 
@@ -436,6 +436,20 @@ def train():
 
                 
                 losses = { k: (v).mean() for k,v in losses.items() } # Mean here because Dataparallel
+                # Loss Key:
+                #  - B: Box Localization Loss
+                #  - C: Class Confidence Loss
+                #  - M: Mask Loss
+                #  - P: Prototype Loss
+                #  - D: Coefficient Diversity Loss
+                #  - E: Class Existence Loss
+                #  - S: Semantic Segmentation Loss
+                #  - T: Is not a loss, time measure
+                #  - I: Mask IoU loss
+                writer.add_scalar('training/Box Localization Loss',losses['B'],len(datum[0])*__index+i)
+                writer.add_scalar('training/Mask Loss',losses['M'],len(datum[0])*__index+i)
+                writer.add_scalar('training/Class Confidence Loss',losses['C'],len(datum[0])*__index+i)
+                writer.add_scalar('training/Semantic Segmentation Loss',losses['S'],len(datum[0])*__index+i)
                 loss = sum([losses[k] for k in losses])
                 
                 # no_inf_mean removes some components from the loss, so make sure to backward through all of it
