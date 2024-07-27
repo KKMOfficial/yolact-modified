@@ -588,6 +588,9 @@ class Yolact(nn.Module):
                 proto_out = self.proto_net(proto_x)
                 proto_out = cfg.mask_proto_prototype_activation(proto_out)
 
+                # log the proto network results
+                # if writer is not None : writer.
+
                 if cfg.mask_proto_prototypes_as_features:
                     # Clone here because we don't want to permute this, though idk if contiguous makes this unnecessary
                     proto_downsampled = proto_out.clone()
