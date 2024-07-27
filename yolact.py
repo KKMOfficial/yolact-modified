@@ -561,7 +561,7 @@ class Yolact(nn.Module):
                 module.weight.requires_grad = enable
                 module.bias.requires_grad = enable
     
-    def forward(self, x):
+    def forward(self, x, writer=None):
         """ The input should be of size [batch_size, 3, img_h, img_w] """
         _, _, img_h, img_w = x.size()
         cfg._tmp_img_h = img_h
