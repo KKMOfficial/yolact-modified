@@ -365,7 +365,7 @@ def train():
             if (epoch+1)*epoch_size < iteration:
                 continue
             
-            for datum in data_loader:
+            for __index,datum in enumerate(data_loader):
                 # Stop if we've reached an epoch if we're resuming from start_iter
                 if iteration == (epoch+1)*epoch_size:
                     break
@@ -399,13 +399,18 @@ def train():
                     set_lr(optimizer, args.lr * (args.gamma ** step_index))
 
                 if pipeline_check_stage : print(f"Optimizer Informatin\n{optimizer}")
-                if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
+                writer.add_scalar("learning rate",optimizer.param_groups[0]['lr'],epoch*epoch_size+__index)
+                writer.add_scalar("momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
+                writer.add_scalar("weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
+                # if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
                 
                 # Zero the grad to get ready to compute gradients
                 optimizer.zero_grad()
 
                 # Forward Pass + Compute loss at the same time (see CustomDataParallel and NetLoss)
+                
                 losses = net(datum)
+
                 
                 losses = { k: (v).mean() for k,v in losses.items() } # Mean here because Dataparallel
                 loss = sum([losses[k] for k in losses])
