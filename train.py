@@ -410,9 +410,11 @@ def train():
 
                 # Forward Pass + Compute loss at the same time (see CustomDataParallel and NetLoss)
                 # writer.add_images('train/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
-                print(f">>>>>>>>>>>>>>{type(datum)}")
-                print(f">>>>>>>>>>>>>>{len(datum[0])}")
-                print(f">>>>>>>>>>>>>>{len(datum[1])}")
+                for i,x in enumerate(datum[0]):
+                  writer.add_images('train/train_images', x[None,:,:,:], global_step=5*__index+i)
+                for i,x in enumerate(datum[1][1]):
+                  writer.add_images('train/masks_images', x[None,:,:,:], global_step=5*__index+i)
+                
 
                 losses = net(datum)
 
