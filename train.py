@@ -513,23 +513,13 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
         indeces = list(range(20))
         for device, alloc in zip(devices, allocation):
             for _ in range(alloc):
-                if (cur_idx<100)&(pipeline_check_stage) :
-                    # print(f"Image Information : {images[cur_idx]}")
-                    # print(f"Target Information : {targets[cur_idx]}")
-                    # print(f"Mask Information : {masks[cur_idx]}")
-                    # visualize_image(images[cur_idx].permute(1,2,0), "image", f"./output/image_{rand_id}.png")
-                    # visualize_image(targets[cur_idx], "target image", f"./output/target_{rand_id}.png")
-                    # visualize_image(masks[cur_idx].permute(1,2,0), "mask image", f"./output/mask_{rand_id}.png")
-                    writer.add_images('train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
-                    writer.add_scalar("current index", cur_idx)
-                    # writer.add_images('mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
-                    print(f">>>>>>> {images[cur_idx][None,:,:,:].shape}")
-                    print(f">>>>>>> {masks[cur_idx][None,:,:,:].shape}")
-
+                writer.add_images('train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
+                writer.add_images('mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
                 images[cur_idx]  = gradinator(images[cur_idx].to(device))
                 targets[cur_idx] = gradinator(targets[cur_idx].to(device))
                 masks[cur_idx]   = gradinator(masks[cur_idx].to(device))
                 cur_idx += 1
+                
 
         if cfg.preserve_aspect_ratio:
             # Choose a random size from the batch
