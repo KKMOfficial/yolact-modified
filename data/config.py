@@ -145,8 +145,10 @@ shoga_dataset = dataset_base.copy({
   'name': 'Shoga_Dataset',
   'train_images':'/content/shoga-segmentation-combined-14030118-2/train',
   'train_info':'/content/shoga-segmentation-combined-14030118-2/train/_annotations.coco.json',
-  'valid_images': '/content/shoga-segmentation-combined-14030118-2/valid',
-  'valid_info':   '/content/shoga-segmentation-combined-14030118-2/valid/_annotations.coco.json',
+  # 'valid_images': '/content/shoga-segmentation-combined-14030118-2/valid',
+  # 'valid_info':   '/content/shoga-segmentation-combined-14030118-2/valid/_annotations.coco.json',
+  'valid_images':'/content/shoga-segmentation-combined-14030118-2/train',
+  'valid_info':'/content/shoga-segmentation-combined-14030118-2/train/_annotations.coco.json',
   'class_names': ('bottle'),
   'label_map': { 1:  1 },
 })
