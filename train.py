@@ -24,6 +24,7 @@ import datetime
 import matplotlib.pyplot as plt
 import random
 from torch.utils.tensorboard import SummaryWriter
+import torchvision
 
 # Oof
 import eval as eval_script
@@ -211,8 +212,13 @@ class NetLoss(nn.Module):
         self.net = net
         self.criterion = criterion
     
-    def forward(self, images, targets, masks, num_crowds):
+    def forward(self, images, targets, masks, num_crowds, cur_index=0, log=False):
         preds = self.net(images)
+        print(f">>>>>>>>>>>>>{preds.keys()}")
+        print(f">>>>>>>>>>>>>{preds['proto'].shape}")
+        if log:
+          for x in preds['proto']:
+            writer.add_images('output/masks_protos', y, global_step=cur_index)
         losses = self.criterion(self.net, preds, targets, masks, num_crowds)
         return losses
 
@@ -411,12 +417,12 @@ def train():
                 # Forward Pass + Compute loss at the same time (see CustomDataParallel and NetLoss)
                 # writer.add_images('train/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
                 for i,x in enumerate(datum[0]):
-                  writer.add_images('train/train_images', x[None,:,:,:], global_step=5*__index+i)
+                  writer.add_images('before_preprocess/train_images', x[None,:,:,:], global_step=len(datum[0])*__index+i)
                 for i,x in enumerate(datum[1][1]):
-                  writer.add_images('train/masks_images', x[None,:,:,:], global_step=5*__index+i)
+                  writer.add_images('before_preprocess/masks_images', x[None,:,:,:], global_step=len(datum[0])*__index+i)
                 
 
-                losses = net(datum)
+                losses = net(datum, cur_index=__index, log=True)
 
                 
                 losses = { k: (v).mean() for k,v in losses.items() } # Mean here because Dataparallel
@@ -525,8 +531,8 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
         indeces = list(range(20))
         for device, alloc in zip(devices, allocation):
             for _ in range(alloc):
-                writer.add_images('prepare_data/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
-                writer.add_images('prepare_data/mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
+                writer.add_images('after_preprocess/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
+                writer.add_images('after_preprocess/mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
                 images[cur_idx]  = gradinator(images[cur_idx].to(device))
                 targets[cur_idx] = gradinator(targets[cur_idx].to(device))
                 masks[cur_idx]   = gradinator(masks[cur_idx].to(device))
