@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt
 import random
 from torch.utils.tensorboard import SummaryWriter
 import torchvision
+from tqdm import tqdm
 
 # Oof
 import eval as eval_script
@@ -319,8 +320,10 @@ def train():
         yolact_net.init_weights(backbone_path=args.save_folder + cfg.backbone.path)
 
     
-    optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
-                          weight_decay=args.decay)
+    # use Adam instead of the SGD
+    # optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
+    #                       weight_decay=args.decay)
+    optimizer = optim.Adam(net.parameters(), lr=args.lr)
     
     if pipeline_check_stage : print(f"Optimizer Object\n{optimizer}\nLearning Rate={args.lr}\nMomentum={args.momentum}\nWeight Decay={args.decay}")
     
@@ -381,7 +384,7 @@ def train():
             if (epoch+1)*epoch_size < iteration:
                 continue
             
-            for __index,datum in enumerate(data_loader):
+            for __index,datum in tqdm(enumerate(data_loader)):
                 # Stop if we've reached an epoch if we're resuming from start_iter
                 if iteration == (epoch+1)*epoch_size:
                     break
@@ -405,19 +408,22 @@ def train():
                 if changed:
                     cfg.delayed_settings = [x for x in cfg.delayed_settings if x[0] > iteration]
 
-                # Warm up by linearly interpolating the learning rate from some smaller value
-                if cfg.lr_warmup_until > 0 and iteration <= cfg.lr_warmup_until:
-                    set_lr(optimizer, (args.lr - cfg.lr_warmup_init) * (iteration / cfg.lr_warmup_until) + cfg.lr_warmup_init)
 
-                # Adjust the learning rate at the given iterations, but also if we resume from past that iteration
-                while step_index < len(cfg.lr_steps) and iteration >= cfg.lr_steps[step_index]:
-                    step_index += 1
-                    set_lr(optimizer, args.lr * (args.gamma ** step_index))
+                # optimizer learning rate decay, disabled in the pipeline_check_stage
+                if not pipeline_check_stage:
+                    # Warm up by linearly interpolating the learning rate from some smaller value
+                    if cfg.lr_warmup_until > 0 and iteration <= cfg.lr_warmup_until:
+                        set_lr(optimizer, (args.lr - cfg.lr_warmup_init) * (iteration / cfg.lr_warmup_until) + cfg.lr_warmup_init)
+    
+                    # Adjust the learning rate at the given iterations, but also if we resume from past that iteration
+                    while step_index < len(cfg.lr_steps) and iteration >= cfg.lr_steps[step_index]:
+                        step_index += 1
+                        set_lr(optimizer, args.lr * (args.gamma ** step_index))
 
                 # if pipeline_check_stage : print(f"Optimizer Informatin\n{optimizer}")
                 writer.add_scalar("training/learning rate",optimizer.param_groups[0]['lr'],epoch*epoch_size+__index)
-                writer.add_scalar("training/momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
-                writer.add_scalar("training/weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
+                # writer.add_scalar("training/momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
+                # writer.add_scalar("training/weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
                 
                 # if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
                 
