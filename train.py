@@ -402,13 +402,18 @@ def train():
                 writer.add_scalar("learning rate",optimizer.param_groups[0]['lr'],epoch*epoch_size+__index)
                 writer.add_scalar("momentum",optimizer.param_groups[0]['momentum'],epoch*epoch_size+__index)
                 writer.add_scalar("weight_decay",optimizer.param_groups[0]['weight_decay'],epoch*epoch_size+__index)
+                
                 # if pipeline_check_stage : print(f"Datum Information\n{datum}\n{len(datum)}")
                 
                 # Zero the grad to get ready to compute gradients
                 optimizer.zero_grad()
 
                 # Forward Pass + Compute loss at the same time (see CustomDataParallel and NetLoss)
-                
+                # writer.add_images('train/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
+                print(f">>>>>>>>>>>>>>{type(datum)}")
+                print(f">>>>>>>>>>>>>>{len(datum[0])}")
+                print(f">>>>>>>>>>>>>>{len(datum[1])}")
+
                 losses = net(datum)
 
                 
@@ -518,8 +523,8 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
         indeces = list(range(20))
         for device, alloc in zip(devices, allocation):
             for _ in range(alloc):
-                writer.add_images('train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
-                writer.add_images('mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
+                writer.add_images('prepare_data/train_images', images[cur_idx][None,:,:,:], global_step=cur_idx)
+                writer.add_images('prepare_data/mask_images', masks[cur_idx][None,:,:,:], global_step=cur_idx)
                 images[cur_idx]  = gradinator(images[cur_idx].to(device))
                 targets[cur_idx] = gradinator(targets[cur_idx].to(device))
                 masks[cur_idx]   = gradinator(masks[cur_idx].to(device))
