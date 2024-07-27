@@ -23,6 +23,7 @@ import argparse
 import datetime
 import matplotlib.pyplot as plt
 import random
+from torch.utils.tensorboard import SummaryWriter
 
 # Oof
 import eval as eval_script
@@ -37,6 +38,9 @@ def str2bool(v):
 
 
 # region ---------------------- SANITY CHECKS ----------------------
+# Initialize the SummaryWriter
+writer = SummaryWriter()
+# debugging flags
 pipeline_check_stage = True
 # low level logs about the model, criterino, optimizer, dataloader
 # datum logs, image, mask, target
@@ -248,6 +252,7 @@ def visualize_image(image, title="place image name here!", file_name="new_image.
 
     # Show the plot
     plt.savefig(file_name)
+
 
 
 def train():
@@ -504,13 +509,14 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
         images, (targets, masks, num_crowds) = datum
 
         cur_idx = 0
+        indeces = list(range(20))
         for device, alloc in zip(devices, allocation):
             for _ in range(alloc):
-                if cur_idx==0&pipeline_check_stage :
-                    rand_id = random.randint(1, 1000000)
-                    print(f"Image Information : {images[cur_idx]}")
-                    print(f"Target Information : {targets[cur_idx]}")
-                    print(f"Mask Information : {masks[cur_idx]}")
+                if (cur_idx<10)&(pipeline_check_stage) :
+                    rand_id = indeces.pop(1)
+                    # print(f"Image Information : {images[cur_idx]}")
+                    # print(f"Target Information : {targets[cur_idx]}")
+                    # print(f"Mask Information : {masks[cur_idx]}")
                     visualize_image(images[cur_idx].permute(1,2,0), "image", f"./output/image_{rand_id}.png")
                     visualize_image(targets[cur_idx], "target image", f"./output/target_{rand_id}.png")
                     visualize_image(masks[cur_idx].permute(1,2,0), "mask image", f"./output/mask_{rand_id}.png")
