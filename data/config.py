@@ -520,11 +520,11 @@ coco_base_config = Config({
 
     # SSD data augmentation parameters
     # Randomize hue, vibrance, etc.
-    'augment_photometric_distort': True,
+    'augment_photometric_distort': False,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
-    'augment_expand': True,
+    'augment_expand': False,
     # Potentialy sample a random crop from the image and put it in a random place
-    'augment_random_sample_crop': True,
+    'augment_random_sample_crop': False,
     # Mirror the image with a probability of 1/2
     'augment_random_mirror': True,
     # Flip the image vertically with a probability of 1/2
